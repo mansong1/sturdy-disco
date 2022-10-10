@@ -1,7 +1,7 @@
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: ClusterClass
 metadata:
-  name: quick-start
+  name: {{ .Values.cluster.name }}
   namespace: default
 spec:
   controlPlane:
@@ -9,16 +9,16 @@ spec:
       ref:
         apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
         kind: DockerMachineTemplate
-        name: quick-start-control-plane
+        name: {{ .Values.cluster.name }}-control-plane
     ref:
       apiVersion: controlplane.cluster.x-k8s.io/v1beta1
       kind: KubeadmControlPlaneTemplate
-      name: quick-start-control-plane
+      name: {{ .Values.cluster.name }}-control-plane
   infrastructure:
     ref:
       apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
       kind: DockerClusterTemplate
-      name: quick-start-cluster
+      name: {{ .Values.cluster.name }}-cluster
   patches:
   - definitions:
     - jsonPatches:
@@ -234,17 +234,17 @@ spec:
           ref:
             apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
             kind: KubeadmConfigTemplate
-            name: quick-start-default-worker-bootstraptemplate
+            name: {{ .Values.cluster.name }}-default-worker-bootstraptemplate
         infrastructure:
           ref:
             apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
             kind: DockerMachineTemplate
-            name: quick-start-default-worker-machinetemplate
+            name: {{ .Values.cluster.name }}-default-worker-machinetemplate
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: DockerClusterTemplate
 metadata:
-  name: quick-start-cluster
+  name: {{ .Values.cluster.name }}-cluster
   namespace: default
 spec:
   template:
@@ -253,7 +253,7 @@ spec:
 apiVersion: controlplane.cluster.x-k8s.io/v1beta1
 kind: KubeadmControlPlaneTemplate
 metadata:
-  name: quick-start-control-plane
+  name: {{ .Values.cluster.name }}-control-plane
   namespace: default
 spec:
   template:
@@ -283,7 +283,7 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: DockerMachineTemplate
 metadata:
-  name: quick-start-control-plane
+  name: {{ .Values.cluster.name }}-control-plane
   namespace: default
 spec:
   template:
@@ -295,7 +295,7 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: DockerMachineTemplate
 metadata:
-  name: quick-start-default-worker-machinetemplate
+  name: {{ .Values.cluster.name }}-default-worker-machinetemplate
   namespace: default
 spec:
   template:
@@ -307,7 +307,7 @@ spec:
 apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
 kind: KubeadmConfigTemplate
 metadata:
-  name: quick-start-default-worker-bootstraptemplate
+  name: {{ .Values.cluster.name }}-default-worker-bootstraptemplate
   namespace: default
 spec:
   template:
@@ -333,10 +333,10 @@ spec:
       cidrBlocks:
       - 10.128.0.0/12
   topology:
-    class: quick-start
+    class: {{ .Values.cluster.name }}
     controlPlane:
       metadata: {}
-      replicas: 3
+      replicas: {{ .Values.cluster.masterNodes }}
     variables:
     - name: imageRepository
       value: ""
@@ -350,9 +350,9 @@ spec:
         enabled: true
         enforce: baseline
         warn: restricted
-    version: v1.25.2
+    version: {{ .Values.cluster.version }}
     workers:
       machineDeployments:
       - class: default-worker
-        name: md-0
-        replicas: 3
+        name: {{ .Values.cluster.name }}-md-0
+        replicas: {{ .Values.cluster.workerNodes }}
