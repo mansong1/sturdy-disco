@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: c1-cluster-create
+  name: c2-cluster-create
 spec:
   destination:
     name: ''
