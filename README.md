@@ -5,7 +5,7 @@ $ clusterctl init --infrastructure docker
 $ kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 
-$ clusterctl generate cluster c1 --flavor development \
+clusterctl generate cluster c1 --flavor development \
   --infrastructure docker \
   --kubernetes-version v1.25.2 \
   --control-plane-machine-count=3 \
